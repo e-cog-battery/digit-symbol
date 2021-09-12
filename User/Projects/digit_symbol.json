@@ -1,0 +1,18 @@
+{
+  "all_procs": {
+    "procedure_1.csv": "item,phasetype,max time,text,shuffle 1,\r\n2 to 3,digit-symbol,user,,off,\r\n0,instruct,user,This is the start of a new experiment.,off,"
+  },
+  "conditions": "name,notes,stimuli,procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,scripts,\r\ncondition_1,You can put more detailed notes in this field,stimuli_1.csv,procedure_1.csv,off,,on,,,5,,",
+  "all_stims": {
+    "stimuli_1.csv": "column_1_symbol,column_2_symbol,column_3_symbol,column_4_symbol,column_5_symbol,column_1_digit,column_2_digit,column_3_digit,column_4_digit,column_5_digit,legend_column_1_symbol,legend_column_2_symbol,legend_column_3_symbol,legend_column_4_symbol,legend_column_5_symbol,legend_column_1_digit,legend_column_2_digit,legend_column_3_digit,legend_column_4_digit,legend_column_5_digit,\r\n../User/Stimuli/symbol_1.png,../User/Stimuli/symbol_2.png,../User/Stimuli/symbol_3.png,../User/Stimuli/symbol_4.png,../User/Stimuli/symbol_5.png,1,2,3,4,5,../User/Stimuli/symbol_1.png,../User/Stimuli/symbol_2.png,../User/Stimuli/symbol_3.png,../User/Stimuli/symbol_4.png,../User/Stimuli/symbol_5.png,1,2,3,4,5,\r\n../User/Stimuli/symbol_5.png,../User/Stimuli/symbol_1.png,../User/Stimuli/symbol_2.png,../User/Stimuli/symbol_3.png,../User/Stimuli/symbol_4.png,5,1,2,3,4,../User/Stimuli/symbol_1.png,../User/Stimuli/symbol_2.png,../User/Stimuli/symbol_3.png,../User/Stimuli/symbol_4.png,../User/Stimuli/symbol_5.png,1,2,3,4,5,\r\n,,,,,,,,,,,,,,,,,,,,"
+  },
+  "location": "zia-ant/digit-symbol/digit_symbol",
+  "public_key": "gB2zMINaBuR81sA2qAdY/qiOAfqQVK6i/aO+0bjdyyw=",
+  "surveys": {},
+  "phasetypes": {
+    "digit-symbol": "[[[LOCATION]]]../User/PhaseTypes/digit-symbol.html",
+    "instruct": "[[[LOCATION]]]../Default/DefaultPhaseTypes/instruct.html"
+  },
+  "procs_csv": {},
+  "stims_csv": {}
+}

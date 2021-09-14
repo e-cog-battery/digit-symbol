@@ -4,6 +4,7 @@
   color: black;
   text-align: center;
   border: 3px solid black;
+  width: 150px;
   }
   
   .task_digit{
@@ -40,130 +41,173 @@
 
 
 
+
 </style>
-<div>
-  <div style="float: left;margin-right:10px">
-    <table class="legend_table" id="legend_table1">
-      <tr>
-        <td>
-          <div class="legend_digit" id="legend_digit_1">{{legend_column_1_digit}}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img class="legend_symbol" src="{{legend_column_1_symbol}}" id="legend_symbol_1">
-        </td>
-      </tr>
-    </table>
-  </div>
-  
-  <div style="float: left;margin-right:10px">
-    <table class="legend_table" id="legend_table2">
-      <tr>
-        <td>
-          <div class="legend_digit" id="legend_digit_2">{{legend_column_2_digit}}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img class="legend_symbol" src="{{legend_column_2_symbol}}" id="legend_symbol_2">
-        </td>
-      </tr>
-    </table>
-  </div>
-  
-  <div style="float: left;margin-right:10px">
-    <table class="legend_table" id="legend_table3">
-      <tr>
-        <td>
-          <div class="legend_digit" id="legend_digit_3">{{legend_column_3_digit}}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img class="legend_symbol" src="{{legend_column_3_symbol}}" id="legend_symbol_3">
-        </td>
-      </tr>
-    </table>
-  </div>
-  
-  <div style="float: left;margin-right:10px">
-    <table class="legend_table" id="legend_table4">
-      <tr>
-        <td>
-          <div class="legend_digit" id="legend_digit_4">{{legend_column_4_digit}}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img class="legend_symbol" src="{{legend_column_4_symbol}}" id="legend_symbol_4">
-        </td>
-      </tr>
-    </table>
-  </div>
-  
-  <div style="float: left;margin-right:10px">
-    <table class="legend_table" id="legend_table5">
-      <tr>
-        <td>
-          <div class="legend_digit" id="legend_digit_5">{{legend_column_5_digit}}</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img class="legend_symbol" src="{{legend_column_5_symbol}}" id="legend_symbol_5">
-        </td>
-      </tr>
-    </table>
+
+<!--
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <table class="legend_table" id="legend_table1">
+          <tr>
+            <td>
+              <div class="legend_digit" id="legend_digit_1">{{legend_column_1_digit}}</div>
+            </td>
+            <td>
+              <div class="legend_digit" id="legend_digit_2">{{legend_column_2_digit}}</div>
+            </td>
+            <td>
+              <div class="legend_digit" id="legend_digit_3">{{legend_column_3_digit}}</div>
+            </td>
+            <td>
+              <div class="legend_digit" id="legend_digit_4">{{legend_column_4_digit}}</div>
+            </td>
+            <td>
+              <div class="legend_digit" id="legend_digit_5">{{legend_column_5_digit}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_1_symbol}}" id="legend_symbol_1">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_2_symbol}}" id="legend_symbol_2">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_3_symbol}}" id="legend_symbol_3">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_4_symbol}}" id="legend_symbol_4">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_5_symbol}}" id="legend_symbol_5">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="row" style="height:20px"></div>
+      <div class="row">
+        <table class="task_table" id="table1">
+          <tr>
+            <td>
+              <div class="task_digit">{{column_1_digit}}</div>
+            </td>
+            <td>
+              <div class="task_digit">{{column_2_digit}}</div>
+            </td>
+            <td>
+              <div class="task_digit">{{column_3_digit}}</div>
+            </td>
+            <td>
+              <div class="task_digit">{{column_4_digit}}</div>
+            </td>
+            <td>
+              <div class="task_digit">{{column_5_digit}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1">
+            </td>
+            <td>
+              <img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2">
+            </td>
+            <td>
+              <img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3">
+            </td>
+            <td>
+              <img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4">
+            </td>
+            <td>
+              <img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5">
+            </td>
+          </tr>
+        </table>
+        
+        
+      </div>
+    </div>
+    <div class="col" style="width:100px"></div>
+    <div class="col">
+      <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
+    <div class="row"><img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2"></div>
+    <div class="row"><img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3"></div>
+    <div class="row"><img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4"></div>
+    <div class="row"><img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5"></div>
+    </div>    
   </div>
 </div>
+-->
 
-<br><br><br><br><br><br><br><br><br><br>
-<div>
-  <table class="task_table" id="table1">
-    <tr>
-      <td>
-        <div class="task_digit">{{column_1_digit}}</div>
-      </td>
-      <td>
-        <div class="task_digit">{{column_2_digit}}</div>
-      </td>
-      <td>
-        <div class="task_digit">{{column_3_digit}}</div>
-      </td>
-      <td>
-        <div class="task_digit">{{column_4_digit}}</div>
-      </td>
-      <td>
-        <div class="task_digit">{{column_5_digit}}</div>
-      </td>
-    </tr>
-      <tr>
-      <td>
-        <img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1">
-      </td>
-      <td>
-        <img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2">
-      </td>
-      <td>
-        <img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3">
-      </td>
-      <td>
-        <img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4">
-      </td>
-      <td>
-        <img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5">
-      </td>
-    </tr>
-  </table>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="row" id="legend_table">
+      </div>
+    </div>
+  </div>
 </div>
-
-
 
 
 <input type="hidden" id="image_response" name="image_response">
 
 <script>
+var legend_symbols = "{{legend_symbols}}".split("|");
+var column_digits	 = "{{column_digits}}".split("|");
+var legend_digits	 = "{{legend_digits}}".split("|");
+
+$("#legend_table").append(
+  $("<table>").append(
+    $("<tr>").append(
+      legend_digits.map(function(legend_item, legend_index){
+        return $("<td>").append(
+          $("<div>")
+            .addClass("legend_digit")
+            .prop("id", "legend_digit_" + legend_index)
+            .html(legend_item)
+        )
+      })
+    ),
+    
+    $("<tr>").append(
+      legend_symbols.map(function(legend_item, legend_index){
+        return $("<td>").append(
+          $("<img>")
+            .addClass("legend_symbol")
+            .prop("id", "legend_symbol_" + legend_index)
+            .attr("src",legend_item)
+        )
+      })
+    )
+  ),
+  
+);
+
+/*
+<table class="legend_table" id="legend_table1">
+         
+          <tr>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_1_symbol}}" id="legend_symbol_1">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_2_symbol}}" id="legend_symbol_2">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_3_symbol}}" id="legend_symbol_3">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_4_symbol}}" id="legend_symbol_4">
+            </td>
+            <td>
+              <img class="legend_symbol" src="{{legend_column_5_symbol}}" id="legend_symbol_5">
+            </td>
+          </tr>
+        </table>
+
+*/
 
 $(".task_symbol").on("click", function(){
 

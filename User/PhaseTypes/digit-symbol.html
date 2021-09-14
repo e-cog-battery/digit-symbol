@@ -1,19 +1,14 @@
 <style>
-  .legend_digit{
+  .legend_digit, .column_digit{
   font-size: 20px;
   color: black;
   text-align: center;
   border: 3px solid black;
   width: 150px;
   }
+
   
-  .task_digit{
-  font-size: 20px;
-  color: black;
-  text-align: center;
-  }
-  
-  .task_symbol, .legend_symbol{
+  .legend_symbol{
     padding: 20px;
     height: 150px;
     width:  150px;
@@ -28,15 +23,13 @@
 
 
 .task_table{
-  border-collapse: collapse;
-  border: 1px solid black;
-  width: 150;
-  height: 200;
+  width: 150px;
+  height: 200px;
 }
 
 .legend_table{
-  width: 150;
-  height: 200;
+  width: 150px;
+  height: 200px;
 }
 
 
@@ -146,6 +139,14 @@
     <div class="col">
       <div class="row" id="legend_table">
       </div>
+      <div class="row" style= height:100px>
+      </div>
+      <div class="row" id="task_table">
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="row" id="symbol_table">
     </div>
   </div>
 </div>
@@ -182,8 +183,45 @@ $("#legend_table").append(
       })
     )
   ),
+  );
   
-);
+$("#task_table").append(
+    $("<tr>").append(
+      column_digits.map(function(column_item, column_index){
+        return $("<td>").append(
+          $("<div>")
+            .addClass("column_digit")
+            .prop("id", "column_digit" + column_index)
+            .html(column_item)
+        )
+      })
+    ),
+    
+    $("<tr>").append(
+      legend_symbols.map(function(legend_item, legend_index){
+        return $("<td>").append(
+          $("<img>")
+            .addClass("legend_symbol")
+            .prop("id", "legend_symbol_" + legend_index)
+            .attr("src",legend_item)
+        )
+      })
+    )
+  );
+
+$("symbol_table").append(
+  $("<td>").append(
+    legend_symbols.map(function(legend_item, legend_index){
+     return $("<tr>").append(
+      $("<img>")
+        .addClass("legend_symbol")
+        .prop("id", "legend_symbol_" + legend_index)
+        .attr("src",legend_item)
+       )
+    })
+    )
+    );
+  
 
 /*
 <table class="legend_table" id="legend_table1">

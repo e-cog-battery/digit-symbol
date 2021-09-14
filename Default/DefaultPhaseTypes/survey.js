@@ -456,167 +456,170 @@ function process_question(row, row_no) {
      */
     [row_ques_perc, row_resp_perc] = row_perc(row["question_width"]);
 
-    if (typeof settings.feedback_before_response === "undefined") {
+    if (typeof settings.feedback_before_response == "undefined") {
       settings.feedback_before_response = true;
     }
 
-    if (typeof settings.lock_after_feedback === "undefined") {
+    if (typeof settings.lock_after_feedback == "undefined") {
       settings.lock_after_feedback = false;
     }
 
-    if (typeof row["type"] === "undefined") {
+    if (typeof row["type"] == "undefined") {
       return false;
     }
 
-    switch (row["type"].toLowerCase()) {
-      case "page_start":
-        //var tabs_html = $("#survey_tabs").html();
-        if (settings.tab_hor_vert === "horizontal") {
-          span_div = "span";
-        } else if (settings.tab_hor_vert === "vertical") {
-          span_div = "div";
-        }
-        if (typeof survey_obj.tabs === "undefined") {
-          survey_obj.tabs = 0;
-        } else {
-          survey_obj.tabs++;
-        }
-        if (survey_obj.tabs == 0) {
-          //i.e. is the first tab
-          active_button = "btn-outline-primary active";
-        } else {
-          active_button = "btn-secondary disabled";
-        }
-        if (settings.tab_hor_vert == "vertical") {
-          var vert_btn_block = "btn-block";
-        } else {
-          var vert_btn_block = "";
-        }
-        $("#survey_tabs").append(
-          $("<" + span_div + ">")
-            .addClass("btn-group-toggle")
-            .attr("data-toggle", "buttons")
-            .append(
-              $("<label>")
-                .addClass("btn")
-                .addClass("show_tab")
-                .html(row["text"])
-                .prop("id", "tab_" + survey_obj.tabs + "_button")
-                .append(
-                  $("<input>")
-                    .attr("autocomplete", "off")
-                    .attr("checked", true)
-                    .attr("type", "checkbox")
-                )
-            )[0].outerHTML
-        );
-
-        page_break_indexes = [];
-        survey_obj.data.forEach(function (row, this_index) {
-          if (
-            typeof row.type !== "undefined" &&
-            row.type.toLowerCase() == "page_start"
-          ) {
-            page_break_indexes.push(this_index);
+    if (
+      typeof survey_obj.phasetypes !== "undefined" &&
+      typeof survey_obj.phasetypes[row.type] !== "undefined"
+    ) {
+      var mod_html = survey_obj.phasetypes[row.type];
+      Object.keys(row).forEach(function (attribute) {
+        mod_html = mod_html.replaceAll("{{" + attribute + "}}", row[attribute]);
+      });
+      question_td += mod_html;
+    } else {
+      switch (row["type"].toLowerCase()) {
+        case "page_start":
+          //var tabs_html = $("#survey_tabs").html();
+          if (settings.tab_hor_vert == "horizontal") {
+            span_div = "span";
+          } else if (settings.tab_hor_vert == "vertical") {
+            span_div = "div";
           }
-        });
+          if (typeof survey_obj.tabs == "undefined") {
+            survey_obj.tabs = 0;
+          } else {
+            survey_obj.tabs++;
+          }
+          if (survey_obj.tabs == 0) {
+            //i.e. is the first tab
+            active_button = "btn-outline-primary active";
+          } else {
+            active_button = "btn-secondary disabled";
+          }
+          if (settings.tab_hor_vert == "vertical") {
+            var vert_btn_block = "btn-block";
+          } else {
+            var vert_btn_block = "";
+          }
+          $("#survey_tabs").append(
+            $("<" + span_div + ">")
+              .addClass("btn-group-toggle")
+              .attr("data-toggle", "buttons")
+              .append(
+                $("<label>")
+                  .addClass("btn")
+                  .addClass("show_tab")
+                  .html(row["text"])
+                  .prop("id", "tab_" + survey_obj.tabs + "_button")
+                  .append(
+                    $("<input>")
+                      .attr("autocomplete", "off")
+                      .attr("checked", true)
+                      .attr("type", "checkbox")
+                  )
+              )[0].outerHTML
+          );
 
-        if (survey_obj.tabs > 0) {
-          question_td
-            .append(
-              $("<div>")
-                .addClass("survey_page")
-                .css("display", "none")
-                .prop("id", "tab_" + survey_obj.tabs)
-            )
-            .append(
-              $("<table>")
-                .addClass("table_break")
-                .prop("id", "table_" + survey_obj.tabs)
-                .append("<tr>")
-            );
-        } else {
-          question_td
-            .append(
-              $("<div>")
-                .addClass("survey_page")
-                .prop("id", "tab_" + survey_obj.tabs)
-            )
-            .append(
-              $("<table>")
-                .addClass("table_break")
-                .prop("id", "table_" + survey_obj.tabs)
-                .append("<tr>")
-            );
-        }
-        break;
-      case "checkbox":
-      case "checkbox_vertical":
-        question_td += write("checkbox_vertical", row_x);
-        break;
-      case "checkbox_horizontal":
-        question_td += write("checkbox_horizontal", row_x);
-        break;
-      case "checkbox_single":
-        question_td += write("checkbox_single", row_x);
-        break;
-      case "date":
-        question_td += write("date", row_x);
-        break;
-      case "dropdown":
-      case "select":
-        question_td += write("dropdown", row_x);
-        break;
-      case "email":
-        question_td += write("email", row_x);
-        break;
-      case "google_slide":
-      case "jumbled":
-      case "instruct":
-        // these are defined elsewhere to take the whole row
-        break;
-      case "likert":
-        question_td += write("likert", row_x);
-        break;
-      case "number":
-        question_td += write("number", row_x);
-        break;
-      case "para":
-        question_td += write("para", row_x);
-        break;
-      case "radio":
-      case "radio_vertical":
-        question_td += write("radio_vertical", row_x);
-        break;
-      case "radio_horizontal":
-        question_td += write("radio_horizontal", row_x);
-        break;
+          page_break_indexes = [];
+          survey_obj.data.forEach(function (row, this_index) {
+            if (
+              typeof row.type !== "undefined" &&
+              row.type.toLowerCase() == "page_start"
+            ) {
+              page_break_indexes.push(this_index);
+            }
+          });
 
-      case "report_score":
-        question_td.append(
-          $("<input>")
-            .addClass("form-control")
-            .addClass("score_" + row["item_name"])
-            .addClass(row["item_name"] + "_item")
-            .addClass("row_" + row_no)
-            .attr("disabled", true)
-            .attr("type", "text")
-            .prop("name", "survey_" + row["item_name"].toLowerCase())
-        );
-        break;
+          if (survey_obj.tabs > 0) {
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .css("display", "none")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
+          } else {
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
+          }
+          break;
+        case "checkbox":
+        case "checkbox_vertical":
+          question_td += write("checkbox_vertical", row_x);
+          break;
+        case "checkbox_horizontal":
+          question_td += write("checkbox_horizontal", row_x);
+          break;
+        case "checkbox_single":
+          question_td += write("checkbox_single", row_x);
+          break;
+        case "date":
+          question_td += write("date", row_x);
+          break;
+        case "dropdown":
+        case "select":
+          question_td += write("dropdown", row_x);
+          break;
+        case "email":
+          question_td += write("email", row_x);
+          break;
+        case "google_slide":
+        case "jumbled":
+        case "instruct":
+          // these are defined elsewhere to take the whole row
+          break;
+        case "likert":
+          question_td += write("likert", row_x);
+          break;
+        case "number":
+          question_td += write("number", row_x);
+          break;
+        case "para":
+          question_td += write("para", row_x);
+          break;
+        case "radio":
+        case "radio_vertical":
+          question_td += write("radio_vertical", row_x);
+          break;
+        case "radio_horizontal":
+          question_td += write("radio_horizontal", row_x);
+          break;
 
-      case "text":
-        question_td += write("text", row_x);
-        break;
-      default:
-        /*
-         * Load from the user's phasetype
-         */
-        alert(row.type);
+        case "report_score":
+          question_td.append(
+            $("<input>")
+              .addClass("form-control")
+              .addClass("score_" + row["item_name"])
+              .addClass(row["item_name"] + "_item")
+              .addClass("row_" + row_no)
+              .attr("disabled", true)
+              .attr("type", "text")
+              .prop("name", "survey_" + row["item_name"].toLowerCase())
+          );
+          break;
 
-        break;
+        case "text":
+          question_td += write("text", row_x);
+          break;
+      }
     }
-
     if (feedback_array) {
       question_td.append(
         $("<button>")
@@ -743,10 +746,6 @@ function process_score(
   }
 }
 
-function load_phasetypes() {
-  $.get("../User/PhaseTypes/" + row.type + ".html", function (this_html) {});
-}
-
 function process_returned_questionnaire(data, survey_outline) {
   /*
    * trim the data if it has a blank final row
@@ -757,14 +756,6 @@ function process_returned_questionnaire(data, survey_outline) {
   survey_obj.data = data;
   survey_obj.data = Papa.unparse(survey_obj.data);
   survey_obj.data = parent.parent.Collector.PapaParsed(survey_obj.data);
-
-  /*
-   * detect if there are phasetypes that need to be loaded
-   */
-
-  survey_obj.data.filter(function (row) {
-    return types_list.indexOf(row.type) === -1;
-  });
 
   survey_obj.scales = {};
   var col_headers = Object.keys(survey_obj.data[0]);
@@ -1480,6 +1471,7 @@ function write_survey(this_survey, this_id) {
     }
   });
 }
+
 /*
  * exports for testing
  */

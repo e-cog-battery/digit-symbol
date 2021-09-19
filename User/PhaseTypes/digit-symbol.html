@@ -209,42 +209,22 @@ $("#task_table").append(
     )
   );
 
-$("symbol_table").append(
-  $("<td>").append(
-    legend_symbols.map(function(legend_item, legend_index){
-     return $("<tr>").append(
-      $("<img>")
-        .addClass("legend_symbol")
-        .prop("id", "legend_symbol_" + legend_index)
-        .attr("src",legend_item)
-       )
-    })
-    )
-    );
-  
 
 /*
-<table class="legend_table" id="legend_table1">
-         
-          <tr>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_1_symbol}}" id="legend_symbol_1">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_2_symbol}}" id="legend_symbol_2">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_3_symbol}}" id="legend_symbol_3">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_4_symbol}}" id="legend_symbol_4">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_5_symbol}}" id="legend_symbol_5">
-            </td>
-          </tr>
-        </table>
-
+$("symbol_table").append(
+  $("<table>").append(
+    $("<div class="row">").append(
+      legend_symbols.map(function(legend_item, legend_index){
+       return $("<tr>").append(
+        $("<img>")
+          .addClass("legend_symbol")
+          .prop("id", "legend_symbol_" + legend_index)
+          .attr("src",legend_item)
+         )
+      })
+      )
+      ),
+    );
 */
 
 $(".task_symbol").on("click", function(){

@@ -55,8 +55,8 @@
     </div>
   </div>
 </div>
-<button class="btn btn-primary">Submit</button>
--->
+<button class="btn btn-primary" onclick="Phase.submit()" disabled id="submit_btn">Submit</button>
+
 
 <input type="hidden" id="image_response" name="image_response">
 
@@ -155,6 +155,7 @@ Phase.set_timer(function(){
           $("<img>")
             .addClass("legend_symbol")
             .addClass("symbol_input")
+            .addClass("blankie")
             .prop("id", "legend_symbol_" + legend_index)
             .attr("src","../User/Stimuli/blank.png")
         )
@@ -180,11 +181,24 @@ Phase.set_timer(function(){
   
   $(".symbol_input").on("click", function(){
     $(this).prop("src", $(".selected").prop("src"));
+    $(this).removeClass("blankie");
     
     var all_responses = [];
+    $("#submit_btn").prop("disabled",true);
+    
+    
+    if($(".blankie").length == 0){
+      $("#submit_btn").prop("disabled",false);
+    }
+    
+    /*
     for(var i = 0; i < $(".symbol_input").length; i++){
       all_responses.push($(".symbol_input")[i].src);
     }
+    
+    */
+    
+    
     $("#image_response").val(all_responses.join(","));
   });
   

@@ -15,6 +15,10 @@
     border: 3px solid black;
   }
   
+  .selected{
+    border: 5px solid red;
+  }
+  
   /*
   .task_symbol{
     display: none;
@@ -36,106 +40,8 @@
   */
 }
 
-
-
-
 </style>
 
-<!--
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <div class="row">
-        <table class="legend_table" id="legend_table1">
-          <tr>
-            <td>
-              <div class="legend_digit" id="legend_digit_1">{{legend_column_1_digit}}</div>
-            </td>
-            <td>
-              <div class="legend_digit" id="legend_digit_2">{{legend_column_2_digit}}</div>
-            </td>
-            <td>
-              <div class="legend_digit" id="legend_digit_3">{{legend_column_3_digit}}</div>
-            </td>
-            <td>
-              <div class="legend_digit" id="legend_digit_4">{{legend_column_4_digit}}</div>
-            </td>
-            <td>
-              <div class="legend_digit" id="legend_digit_5">{{legend_column_5_digit}}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_1_symbol}}" id="legend_symbol_1">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_2_symbol}}" id="legend_symbol_2">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_3_symbol}}" id="legend_symbol_3">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_4_symbol}}" id="legend_symbol_4">
-            </td>
-            <td>
-              <img class="legend_symbol" src="{{legend_column_5_symbol}}" id="legend_symbol_5">
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="row" style="height:20px"></div>
-      <div class="row">
-        <table class="task_table" id="table1">
-          <tr>
-            <td>
-              <div class="task_digit">{{column_1_digit}}</div>
-            </td>
-            <td>
-              <div class="task_digit">{{column_2_digit}}</div>
-            </td>
-            <td>
-              <div class="task_digit">{{column_3_digit}}</div>
-            </td>
-            <td>
-              <div class="task_digit">{{column_4_digit}}</div>
-            </td>
-            <td>
-              <div class="task_digit">{{column_5_digit}}</div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1">
-            </td>
-            <td>
-              <img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2">
-            </td>
-            <td>
-              <img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3">
-            </td>
-            <td>
-              <img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4">
-            </td>
-            <td>
-              <img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5">
-            </td>
-          </tr>
-        </table>
-        
-        
-      </div>
-    </div>
-    <div class="col" style="width:100px"></div>
-    <div class="col">
-    <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
-    <div class="row"><img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2"></div>
-    <div class="row"><img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3"></div>
-    <div class="row"><img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4"></div>
-    <div class="row"><img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5"></div>
-    </div>    
-  </div>
-</div>
--->
 
 <div class="container">
   <div class="row">
@@ -145,18 +51,11 @@
       <div class="row" id="task_table"></div>
     </div>
     <div class="col">
-      <div class="row" id="symbol_table">
-        <!--
-        <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
-        <div class="row"><img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2"></div>
-        <div class="row"><img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3"></div>
-        <div class="row"><img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4"></div>
-        <div class="row"><img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5"></div>
-        -->
-      </div>
+      <div class="row" id="symbol_table"></div>
     </div>
   </div>
 </div>
+<button class="btn btn-primary">Submit</button>
 -->
 
 <input type="hidden" id="image_response" name="image_response">
@@ -180,7 +79,6 @@ switch (parent.parent.Project.get_vars.platform) {
     break;
 }
 
-alert(home_dir);
 
 Phase.set_timer(function(){
   var this_phase = parent.parent.project_json.phase_no;
@@ -198,6 +96,20 @@ Phase.set_timer(function(){
     column_digits.push(phase_info["column_digit_" + i]);
     legend_digits.push(phase_info["legend_digit_" + i]);
   }
+  
+  $("#symbol_table").append(
+    legend_symbols.map(function(symbol_item, symbol_index){
+      return $("<div>").append(
+        $("<img>")
+          .addClass("legend_symbol")
+          .addClass("symbol_select")
+          .prop("id", "symbol_image_" + symbol_index)
+          .attr("src",symbol_item)
+      )
+    })  
+  )
+  
+  
   
   
   $("#legend_table").append(
@@ -242,12 +154,14 @@ Phase.set_timer(function(){
         return $("<td>").append(
           $("<img>")
             .addClass("legend_symbol")
+            .addClass("symbol_input")
             .prop("id", "legend_symbol_" + legend_index)
-            .attr("src",legend_item)
+            .attr("src","../User/Stimuli/blank.png")
         )
       })
     )
   );
+  
   $("symbol_table").append(
     $("<table>").append(
       $("<div class='row'>").append(
@@ -262,6 +176,22 @@ Phase.set_timer(function(){
       )
     )
   );
+  
+  
+  $(".symbol_input").on("click", function(){
+    $(this).prop("src", $(".selected").prop("src"));
+    
+    var all_responses = [];
+    for(var i = 0; i < $(".symbol_input").length; i++){
+      all_responses.push($(".symbol_input")[i].src);
+    }
+    $("#image_response").val(all_responses.join(","));
+  });
+  
+  $(".symbol_select").on("click", function(){
+    $(".symbol_select").removeClass("selected");  
+    $(this).addClass("selected");
+  });
   
   $(".task_symbol").on("click", function(){
   

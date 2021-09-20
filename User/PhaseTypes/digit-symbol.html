@@ -163,6 +163,25 @@
 
 <script>
 
+
+var home_dir = "";
+var org_repo = parent.parent.project_json.location.split("/");
+switch (parent.parent.Project.get_vars.platform) {
+  case "simulateonline":
+  case "localhost":
+  case "preview":
+    home_dir = parent.parent.Collector.electron.git.locate_repo({
+      org: org_repo[0],
+      repo: org_repo[1],
+    });
+    break;
+  default:
+    home_dir = "..";
+    break;
+}
+
+alert(home_dir);
+
 Phase.set_timer(function(){
   var this_phase = parent.parent.project_json.phase_no;
   
@@ -175,7 +194,7 @@ Phase.set_timer(function(){
   legend_digits = [];
   
   for(var i = 1; i <= no_symbols; i++){
-    legend_symbols.push(phase_info["legend_symbol_" + i]);
+    legend_symbols.push(home_dir + "/" + phase_info["legend_symbol_" + i]);
     column_digits.push(phase_info["column_digit_" + i]);
     legend_digits.push(phase_info["legend_digit_" + i]);
   }

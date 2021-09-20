@@ -22,14 +22,18 @@
   */
 
 
-.task_table{
+#task_table{
+  /*
   width: 150px;
   height: 200px;
+  */
 }
 
-.legend_table{
+#legend_table{
+  /*
   width: 150px;
   height: 200px;
+  */
 }
 
 
@@ -123,7 +127,7 @@
     </div>
     <div class="col" style="width:100px"></div>
     <div class="col">
-      <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
+    <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
     <div class="row"><img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2"></div>
     <div class="row"><img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3"></div>
     <div class="row"><img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4"></div>
@@ -133,59 +137,76 @@
 </div>
 -->
 
-
 <div class="container">
   <div class="row">
     <div class="col">
-      <div class="row" id="legend_table">
-      </div>
-      <div class="row" style= height:100px>
-      </div>
-      <div class="row" id="task_table">
-      </div>
+      <div class="row" id="legend_table"></div>
+      <div class="row" style= height:100px></div>
+      <div class="row" id="task_table"></div>
     </div>
-  </div>
-  <div class="col">
-    <div class="row" id="symbol_table">
+    <div class="col">
+      <div class="row" id="symbol_table">
+        <!--
+        <div class="row"><img class="task_symbol" src="{{column_1_symbol}}" id="symbol_1"></div>
+        <div class="row"><img class="task_symbol" src="{{column_2_symbol}}" id="symbol_2"></div>
+        <div class="row"><img class="task_symbol" src="{{column_3_symbol}}" id="symbol_3"></div>
+        <div class="row"><img class="task_symbol" src="{{column_4_symbol}}" id="symbol_4"></div>
+        <div class="row"><img class="task_symbol" src="{{column_5_symbol}}" id="symbol_5"></div>
+        -->
+      </div>
     </div>
   </div>
 </div>
-
+-->
 
 <input type="hidden" id="image_response" name="image_response">
 
 <script>
-var legend_symbols = "{{legend_symbols}}".split("|");
-var column_digits	 = "{{column_digits}}".split("|");
-var legend_digits	 = "{{legend_digits}}".split("|");
 
-$("#legend_table").append(
-  $("<table>").append(
-    $("<tr>").append(
-      legend_digits.map(function(legend_item, legend_index){
-        return $("<td>").append(
-          $("<div>")
-            .addClass("legend_digit")
-            .prop("id", "legend_digit_" + legend_index)
-            .html(legend_item)
-        )
-      })
-    ),
-    
-    $("<tr>").append(
-      legend_symbols.map(function(legend_item, legend_index){
-        return $("<td>").append(
-          $("<img>")
-            .addClass("legend_symbol")
-            .prop("id", "legend_symbol_" + legend_index)
-            .attr("src",legend_item)
-        )
-      })
-    )
-  ),
-  );
+Phase.set_timer(function(){
+  var this_phase = parent.parent.project_json.phase_no;
   
-$("#task_table").append(
+  var phase_info = parent.parent.project_json.parsed_proc[this_phase];
+  
+  var no_symbols = parseFloat("{{no_symbols}}");
+
+  legend_symbols = [];
+  column_digits = [];
+  legend_digits = [];
+  
+  for(var i = 1; i <= no_symbols; i++){
+    legend_symbols.push(phase_info["legend_symbol_" + i]);
+    column_digits.push(phase_info["column_digit_" + i]);
+    legend_digits.push(phase_info["legend_digit_" + i]);
+  }
+  
+  
+  $("#legend_table").append(
+    $("<table>").append(
+      $("<tr>").append(
+        legend_digits.map(function(legend_item, legend_index){
+          return $("<td>").append(
+            $("<div>")
+              .addClass("legend_digit")
+              .prop("id", "legend_digit_" + legend_index)
+              .html(legend_item)
+          )
+        })
+      ),
+      
+      $("<tr>").append(
+        legend_symbols.map(function(legend_item, legend_index){
+          return $("<td>").append(
+            $("<img>")
+              .addClass("legend_symbol")
+              .prop("id", "legend_symbol_" + legend_index)
+              .attr("src",legend_item)
+          )
+        })
+      )
+    )
+  );
+  $("#task_table").append(
     $("<tr>").append(
       column_digits.map(function(column_item, column_index){
         return $("<td>").append(
@@ -208,36 +229,52 @@ $("#task_table").append(
       })
     )
   );
+  $("symbol_table").append(
+    $("<table>").append(
+      $("<div class='row'>").append(
+        legend_symbols.map(function(legend_item, legend_index){
+         return $("<tr>").append(
+          $("<img>")
+            .addClass("legend_symbol")
+            .prop("id", "legend_symbol_" + legend_index)
+            .attr("src",legend_item)
+           )
+        })
+      )
+    )
+  );
+  
+  $(".task_symbol").on("click", function(){
+  
+    $(".task_digit").hide();
+    $("task_table").hide();
+    
+    var response = $(this).attr("src");
+    $('#response').css({ 'display':'block' });
+    
+    setTimeout(function(){
+      Phase.submit();
+    },2000);
+  });
+  /*
+  
+  */
+
+  
+  
+  
+}, 0);
+
+
+// no_symbols	legend_symbol_1	legend_symbol_2	legend_symbol_3	legend_symbol_4	legend_symbol_5	column_digit_1	column_digit_2	column_digit_3	column_digit_4	column_digit_5	legend_digit_1	legend_digit_2	legend_digit_3	legend_digit_4	legend_digit_5	
 
 
 /*
-$("symbol_table").append(
-  $("<table>").append(
-    $("<div class="row">").append(
-      legend_symbols.map(function(legend_item, legend_index){
-       return $("<tr>").append(
-        $("<img>")
-          .addClass("legend_symbol")
-          .prop("id", "legend_symbol_" + legend_index)
-          .attr("src",legend_item)
-         )
-      })
-      )
-      ),
-    );
+var legend_symbols = "{{legend_symbols}}".split("|");
+var column_digits	 = "{{column_digits}}".split("|");
+var 	 = "{{legend_digits}}".split("|");
 */
 
-$(".task_symbol").on("click", function(){
 
-  $(".task_digit").hide();
-  $("task_table").hide();
-  
-  var response = $(this).attr("src");
-  $('#response').css({ 'display':'block' });
-  
-  setTimeout(function(){
-    Phase.submit();
-  },2000);
-});
 
 </script>

@@ -17,50 +17,11 @@ if (typeof module !== "undefined") {
   }
 }
 
-var home_dir = "";
-var org_repo = parent.parent.project_json.location.split("/");
-switch (parent.parent.Project.get_vars.platform) {
-  case "simulateonline":
-  case "localhost":
-  case "preview":
-    home_dir = parent.parent.Collector.electron.git.locate_repo({
-      org: org_repo[0],
-      repo: org_repo[1],
-    });
-    break;
-  default:
-    home_dir = "..";
-    break;
-}
-
 /*
  * this survey_js object is required to make testing works
  */
 survey_js = {};
 
-phasetype_obj = {};
-
-types_list = [
-  "checkbox",
-  "checkbox_vertical",
-  "checkbox_horizontal",
-  "checkbox_single",
-  "date",
-  "dropdown",
-  "select",
-  "email",
-  "google_slide",
-  "jumbled",
-  "instruct",
-  "likert",
-  "number",
-  "para",
-  "radio",
-  "radio_vertical",
-  "radio_horizontal",
-  "report_score",
-  "text"
-];
 /*
  * Retrieving settings
  */
@@ -219,10 +180,10 @@ $("#proceed_button").on("click", function () {
 
       if (this_optional.indexOf("no") !== -1) {
         this_optional = this_optional.split("-"); // find out whether there's a minimal number of responses
-        if (this_optional.length === 1) {
+        if (this_optional.length == 1) {
           // default is that length needs to be at least 1
           var min_resp_length = 1;
-        } else if (this_optional.length === 2) {
+        } else if (this_optional.length == 2) {
           var min_resp_length = this_optional[1];
         } else {
           appropriate_message(
@@ -278,7 +239,7 @@ $("#proceed_button").on("click", function () {
     $("#tab_" + current_tab + "_button").removeClass("disabled");
     $("#tab_" + current_tab + "_button").addClass("btn-outline-dark");
     $("#tab_" + current_tab + "_button").click();
-  } else if (proceed === false) {
+  } else if (proceed == false) {
     appropriate_message(
       "You're missing some responses. Please fill in all the answers for the questions in red above."
     );
@@ -296,7 +257,7 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
       str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
       ignore ? "gi" : "g"
     ),
-    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
+    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
 
@@ -345,7 +306,7 @@ function generate_feedback_string(
 function get_feedback(row) {
   if (typeof row["feedback"] !== "undefined" && row["feedback"] !== "") {
     feedback_array = row["feedback"].split("|");
-    if (typeof row["feedback_color"] === "undefined") {
+    if (typeof row["feedback_color"] == "undefined") {
       appropriate_message(
         "The color for the feedback options has not been set. If you created this questionnaire, please add a column 'feedback_color' to your survey and separate the colors by a pipe (|) character."
       );
@@ -449,14 +410,14 @@ function process_question(row, row_no) {
 
     var this_class = "";
     for (var i = 0; i < scoring_object.scales.length; i++) {
-      if (row[scoring_object.scales[i].toLowerCase()] === "1") {
+      if (row[scoring_object.scales[i].toLowerCase()] == "1") {
         this_class +=
           scoring_object.scales[i]
             .toLowerCase()
             .replace("score: ", "")
             .replace(/ |-/, "") + " ";
       }
-      if (row[scoring_object.scales[i].toLowerCase()] === "r1") {
+      if (row[scoring_object.scales[i].toLowerCase()] == "r1") {
         this_class +=
           scoring_object.scales[i]
             .toLowerCase()
@@ -495,168 +456,170 @@ function process_question(row, row_no) {
      */
     [row_ques_perc, row_resp_perc] = row_perc(row["question_width"]);
 
-    if (typeof settings.feedback_before_response === "undefined") {
+    if (typeof settings.feedback_before_response == "undefined") {
       settings.feedback_before_response = true;
     }
 
-    if (typeof settings.lock_after_feedback === "undefined") {
+    if (typeof settings.lock_after_feedback == "undefined") {
       settings.lock_after_feedback = false;
     }
 
-    if (typeof row["type"] === "undefined") {
+    if (typeof row["type"] == "undefined") {
       return false;
     }
 
-    switch (row["type"].toLowerCase()) {
-      case "page_start":
-        //var tabs_html = $("#survey_tabs").html();
-        if (settings.tab_hor_vert === "horizontal") {
-          span_div = "span";
-        } else if (settings.tab_hor_vert === "vertical") {
-          span_div = "div";
-        }
-        if (typeof survey_obj.tabs === "undefined") {
-          survey_obj.tabs = 0;
-        } else {
-          survey_obj.tabs++;
-        }
-        if (survey_obj.tabs === 0) {
-          //i.e. is the first tab
-          active_button = "btn-outline-primary active";
-        } else {
-          active_button = "btn-secondary disabled";
-        }
-        if (settings.tab_hor_vert === "vertical") {
-          var vert_btn_block = "btn-block";
-        } else {
-          var vert_btn_block = "";
-        }
-        $("#survey_tabs").append(
-          $("<" + span_div + ">")
-            .addClass("btn-group-toggle")
-            .attr("data-toggle", "buttons")
-            .append(
-              $("<label>")
-                .addClass("btn")
-                .addClass("show_tab")
-                .html(row["text"])
-                .prop("id", "tab_" + survey_obj.tabs + "_button")
-                .append(
-                  $("<input>")
-                    .attr("autocomplete", "off")
-                    .attr("checked", true)
-                    .attr("type", "checkbox")
-                )
-            )[0].outerHTML
-        );
-
-        page_break_indexes = [];
-        survey_obj.data.forEach(function (row, this_index) {
-          if (
-            typeof row.type !== "undefined" &&
-            row.type.toLowerCase() === "page_start"
-          ) {
-            page_break_indexes.push(this_index);
+    if (
+      typeof survey_obj.phasetypes !== "undefined" &&
+      typeof survey_obj.phasetypes[row.type] !== "undefined"
+    ) {
+      var mod_html = survey_obj.phasetypes[row.type];
+      Object.keys(row).forEach(function (attribute) {
+        mod_html = mod_html.replaceAll("{{" + attribute + "}}", row[attribute]);
+      });
+      question_td += mod_html;
+    } else {
+      switch (row["type"].toLowerCase()) {
+        case "page_start":
+          //var tabs_html = $("#survey_tabs").html();
+          if (settings.tab_hor_vert == "horizontal") {
+            span_div = "span";
+          } else if (settings.tab_hor_vert == "vertical") {
+            span_div = "div";
           }
-        });
+          if (typeof survey_obj.tabs == "undefined") {
+            survey_obj.tabs = 0;
+          } else {
+            survey_obj.tabs++;
+          }
+          if (survey_obj.tabs == 0) {
+            //i.e. is the first tab
+            active_button = "btn-outline-primary active";
+          } else {
+            active_button = "btn-secondary disabled";
+          }
+          if (settings.tab_hor_vert == "vertical") {
+            var vert_btn_block = "btn-block";
+          } else {
+            var vert_btn_block = "";
+          }
+          $("#survey_tabs").append(
+            $("<" + span_div + ">")
+              .addClass("btn-group-toggle")
+              .attr("data-toggle", "buttons")
+              .append(
+                $("<label>")
+                  .addClass("btn")
+                  .addClass("show_tab")
+                  .html(row["text"])
+                  .prop("id", "tab_" + survey_obj.tabs + "_button")
+                  .append(
+                    $("<input>")
+                      .attr("autocomplete", "off")
+                      .attr("checked", true)
+                      .attr("type", "checkbox")
+                  )
+              )[0].outerHTML
+          );
 
-        if (survey_obj.tabs > 0) {
-          question_td
-            .append(
-              $("<div>")
-                .addClass("survey_page")
-                .css("display", "none")
-                .prop("id", "tab_" + survey_obj.tabs)
-            )
-            .append(
-              $("<table>")
-                .addClass("table_break")
-                .prop("id", "table_" + survey_obj.tabs)
-                .append("<tr>")
-            );
-        } else {
-          question_td
-            .append(
-              $("<div>")
-                .addClass("survey_page")
-                .prop("id", "tab_" + survey_obj.tabs)
-            )
-            .append(
-              $("<table>")
-                .addClass("table_break")
-                .prop("id", "table_" + survey_obj.tabs)
-                .append("<tr>")
-            );
-        }
-        break;
-      case "checkbox":
-      case "checkbox_vertical":
-        question_td += write("checkbox_vertical", row_x);
-        break;
-      case "checkbox_horizontal":
-        question_td += write("checkbox_horizontal", row_x);
-        break;
-      case "checkbox_single":
-        question_td += write("checkbox_single", row_x);
-        break;
-      case "date":
-        question_td += write("date", row_x);
-        break;
-      case "dropdown":
-      case "select":
-        question_td += write("dropdown", row_x);
-        break;
-      case "email":
-        question_td += write("email", row_x);
-        break;
-      case "google_slide":
-      case "jumbled":
-      case "instruct":
-        // these are defined elsewhere to take the whole row
-        break;
-      case "likert":
-        question_td += write("likert", row_x);
-        break;
-      case "number":
-        question_td += write("number", row_x);
-        break;
-      case "para":
-        question_td += write("para", row_x);
-        break;
-      case "radio":
-      case "radio_vertical":
-        question_td += write("radio_vertical", row_x);
-        break;
-      case "radio_horizontal":
-        question_td += write("radio_horizontal", row_x);
-        break;
+          page_break_indexes = [];
+          survey_obj.data.forEach(function (row, this_index) {
+            if (
+              typeof row.type !== "undefined" &&
+              row.type.toLowerCase() == "page_start"
+            ) {
+              page_break_indexes.push(this_index);
+            }
+          });
 
-      case "report_score":
-        question_td.append(
-          $("<input>")
-            .addClass("form-control")
-            .addClass("score_" + row["item_name"])
-            .addClass(row["item_name"] + "_item")
-            .addClass("row_" + row_no)
-            .attr("disabled", true)
-            .attr("type", "text")
-            .prop("name", "survey_" + row["item_name"].toLowerCase())
-        );
-        break;
+          if (survey_obj.tabs > 0) {
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .css("display", "none")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
+          } else {
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
+          }
+          break;
+        case "checkbox":
+        case "checkbox_vertical":
+          question_td += write("checkbox_vertical", row_x);
+          break;
+        case "checkbox_horizontal":
+          question_td += write("checkbox_horizontal", row_x);
+          break;
+        case "checkbox_single":
+          question_td += write("checkbox_single", row_x);
+          break;
+        case "date":
+          question_td += write("date", row_x);
+          break;
+        case "dropdown":
+        case "select":
+          question_td += write("dropdown", row_x);
+          break;
+        case "email":
+          question_td += write("email", row_x);
+          break;
+        case "google_slide":
+        case "jumbled":
+        case "instruct":
+          // these are defined elsewhere to take the whole row
+          break;
+        case "likert":
+          question_td += write("likert", row_x);
+          break;
+        case "number":
+          question_td += write("number", row_x);
+          break;
+        case "para":
+          question_td += write("para", row_x);
+          break;
+        case "radio":
+        case "radio_vertical":
+          question_td += write("radio_vertical", row_x);
+          break;
+        case "radio_horizontal":
+          question_td += write("radio_horizontal", row_x);
+          break;
 
-      case "text":
-        question_td += write("text", row_x);
-        break;
-      default:
-        /*
-         * Load from the user's phasetype
-         */
+        case "report_score":
+          question_td.append(
+            $("<input>")
+              .addClass("form-control")
+              .addClass("score_" + row["item_name"])
+              .addClass(row["item_name"] + "_item")
+              .addClass("row_" + row_no)
+              .attr("disabled", true)
+              .attr("type", "text")
+              .prop("name", "survey_" + row["item_name"].toLowerCase())
+          );
+          break;
 
-         question_td += phasetype_obj[row.type];
-
-        break;
+        case "text":
+          question_td += write("text", row_x);
+          break;
+      }
     }
-
     if (feedback_array) {
       question_td.append(
         $("<button>")
@@ -673,18 +636,18 @@ function process_question(row, row_no) {
       );
     }
   }
-  if (typeof row["type"] === "undefined") {
+  if (typeof row["type"] == "undefined") {
     return "";
   } else {
-    if (row["type"].toLowerCase() === "instruct") {
+    if (row["type"].toLowerCase() == "instruct") {
       row_html = write("instruct", row);
-    } else if (row["type"].toLowerCase() === "jumbled") {
+    } else if (row["type"].toLowerCase() == "jumbled") {
       //row_html  = question_td + write("jumbled",row); <-- this is better, but being paused for placement work Anthony is doing
       row_html = write("jumbled", row);
-    } else if (row["type"].toLowerCase() === "likert") {
+    } else if (row["type"].toLowerCase() == "likert") {
       if (
         typeof row["side_by_side"] !== "undefined" &&
-        row["side_by_side"].toLowerCase() === "yes"
+        row["side_by_side"].toLowerCase() == "yes"
       ) {
         var row_html =
           $("<td>")
@@ -709,7 +672,7 @@ function process_question(row, row_no) {
               .html(question_td)
           )[0].outerHTML;
       }
-    } else if (row["type"].toLowerCase() === "google_slide") {
+    } else if (row["type"].toLowerCase() == "google_slide") {
       var row_html = $("<td>")
         .attr("colspan", 2)
         .html(row["text"])[0].outerHTML;
@@ -717,7 +680,7 @@ function process_question(row, row_no) {
       //var row_html="<td colspan='2'>"+row["text"]+"</label></td>";
     } else if (
       typeof row["no_text"] !== "undefined" &&
-      row["no_text"] === "on"
+      row["no_text"] == "on"
     ) {
       var row_html = $("<td>")
         .attr("colspan", 2)
@@ -726,8 +689,8 @@ function process_question(row, row_no) {
       //var row_html="<td colspan='2'>"+question_td+"</td>";
     } else {
       if (
-        (row["text"].toLowerCase() === "page_start") |
-        (row["type"].toLowerCase() === "page_start")
+        (row["text"].toLowerCase() == "page_start") |
+        (row["type"].toLowerCase() == "page_start")
       ) {
         row_html = question_td;
       } else {
@@ -746,15 +709,15 @@ function process_question(row, row_no) {
       }
     }
     if (typeof row["optional"] !== "undefined") {
-      if (row["optional"].toLowerCase() === "no") {
+      if (row["optional"].toLowerCase() == "no") {
         proceed_object.name.push(row["item_name"]);
         proceed_object.type.push(row["type"]);
         proceed_object.break_no.push(page_break_management.breaks_remaining);
       }
     }
     if (
-      typeof row["shuffle_question"] === "undefined" ||
-      row["shuffle_question"].toLowerCase() === "off"
+      typeof row["shuffle_question"] == "undefined" ||
+      row["shuffle_question"].toLowerCase() == "off"
     ) {
       this_shuffle = "none";
     } else {
@@ -794,64 +757,40 @@ function process_returned_questionnaire(data, survey_outline) {
   survey_obj.data = Papa.unparse(survey_obj.data);
   survey_obj.data = parent.parent.Collector.PapaParsed(survey_obj.data);
 
-  /*
-   * detect if there are phasetypes that need to be loaded
-   */
+  survey_obj.scales = {};
+  var col_headers = Object.keys(survey_obj.data[0]);
+  col_headers.forEach(function (header) {
+    if (header.indexOf("score:") === 0) {
+      var original_header = header;
+      header = header.replace("score: ", "");
+      header = header.replace("score:", "");
+      survey_obj.scales[header] = {};
+      survey_obj.scales[header].questions = {};
 
-  var phasetypes = survey_obj.data.filter(function (row) {
-    return types_list.indexOf(row.type.toLowerCase()) === -1;
-  });
-
-  function load_phasetypes(phasetypes){
-    if(phasetypes.length > 0){
-      var phasetype = phasetypes.pop().type;
-
-      $.get(home_dir + "/User/PhaseTypes/" + phasetype + ".html", function(this_html){
-
-        this_html = this_html.replaceAll("../User/", home_dir + "/User/");
-
-        phasetype_obj[phasetype] = this_html;
-        load_phasetypes(phasetypes);
-      });
-
-    } else {
-      survey_obj.scales = {};
-      var col_headers = Object.keys(survey_obj.data[0]);
-      col_headers.forEach(function (header) {
-        if (header.indexOf("score:") === 0) {
-          var original_header = header;
-          header = header.replace("score: ", "");
-          header = header.replace("score:", "");
-          survey_obj.scales[header] = {};
-          survey_obj.scales[header].questions = {};
-
-          for (var i = 1; i < survey_obj.data.length; i++) {
-            row = survey_obj.data[i];
-            if (
-              row[original_header] !== "" &&
-              typeof row[original_header] !== "undefined"
-            ) {
-              survey_obj.scales[header].questions[i] = row[original_header];
-            }
-          }
+      for (var i = 1; i < survey_obj.data.length; i++) {
+        row = survey_obj.data[i];
+        if (
+          row[original_header] !== "" &&
+          typeof row[original_header] !== "undefined"
+        ) {
+          survey_obj.scales[header].questions[i] = row[original_header];
         }
-      });
-      write_survey(survey_obj.data, survey_outline);
-      $("#please_wait_div").hide();
-      $("#proceed_button").show();
-      $("html, body").animate(
-        {
-          scrollTop: $("#" + survey_outline).offset().top,
-        },
-        1000
-      );
+      }
     }
-  }
-  load_phasetypes(phasetypes);
+  });
+  write_survey(survey_obj.data, survey_outline);
+  $("#please_wait_div").hide();
+  $("#proceed_button").show();
+  $("html, body").animate(
+    {
+      scrollTop: $("#" + survey_outline).offset().top,
+    },
+    1000
+  );
 }
 
 function row_perc(this_rat) {
-  if (typeof this_rat === "undefined") {
+  if (typeof this_rat == "undefined") {
     row_resp_perc = "50%";
     row_ques_perc = "50%";
   } else {
@@ -922,9 +861,9 @@ function reveal_answers(this_element) {
         .replace("reveal_", "survey_")
         .replace("_feedback", "_response")
   ).val();
-  response_present = this_response === "" ? false : true;
+  response_present = this_response == "" ? false : true;
 
-  if (settings.feedback_before_response === false && response_present === false) {
+  if (settings.feedback_before_response == false && response_present == false) {
     appropriate_message("Please respond before trying reveal the feedback.");
   } else {
     if ($("#" + this_element.id).hasClass("btn-outline-info")) {
@@ -964,8 +903,8 @@ function row_check(type, row) {
     return (
       typeof row["text"] !== "undefined" &&
       typeof row["type"] !== "undefined" &&
-      (row["text"].toLowerCase() === "page_break") |
-        (row["type"].toLowerCase() === "page_break")
+      (row["text"].toLowerCase() == "page_break") |
+        (row["type"].toLowerCase() == "page_break")
     );
   } else if ((type = "")) {
     //do nothing
@@ -990,7 +929,7 @@ function shuffle(array) {
 function shuffle_answers(row) {
   if (
     typeof row["shuffle_answers"] !== "undefined" &&
-    row["shuffle_answers"].toLowerCase() === "yes"
+    row["shuffle_answers"].toLowerCase() == "yes"
   ) {
     var answers = row["answers"].split("|");
     order = shuffle([...Array(answers.length).keys()]);
@@ -1045,7 +984,7 @@ function update_score() {
         normal_reverse = values_reverse[1];
         var multiplier = parseFloat(normal_reverse.replace("r", ""));
 
-        if (normal_reverse.indexOf("r") === 0) {
+        if (normal_reverse.indexOf("r") == 0) {
           //reverse the values
           this_value = process_score(
             row_no,
@@ -1087,7 +1026,7 @@ function write(type, row) {
   row = shuffle_answers(row);
   row["item_name"] = row["item_name"].toLowerCase();
 
-  if (type === "checkbox_horizontal") {
+  if (type == "checkbox_horizontal") {
     var options = row["answers"].split("|");
     var this_table = $("<table>");
     this_row = this_table[0].insertRow();
@@ -1117,7 +1056,7 @@ function write(type, row) {
     }
 
     this_html += this_table[0].outerHTML;
-  } else if (type === "checkbox_single") {
+  } else if (type == "checkbox_single") {
     var this_div = $("<div>");
     this_div.attr("data-toggle", "buttons");
     this_div.addClass("btn-group-toggle");
@@ -1136,7 +1075,7 @@ function write(type, row) {
     this_div.append(this_label);
     this_label.append(this_checkbox);
     this_html += this_div[0].outerHTML;
-  } else if (type === "checkbox_vertical") {
+  } else if (type == "checkbox_vertical") {
     var options = row["answers"].split("|");
     var values = row["values"].split("|");
     for (var i = 0; i < options.length; i++) {
@@ -1170,7 +1109,7 @@ function write(type, row) {
     }
     if (
       typeof row["other"] !== "undefined" &&
-      row["other"].toLowerCase() === "yes"
+      row["other"].toLowerCase() == "yes"
     ) {
       var this_div = $("<div>");
       this_div.addClass("custom-control").addClass("custom-checkbox");
@@ -1204,7 +1143,7 @@ function write(type, row) {
         "survey_" + row["item_name"].toLowerCase() + "_other";
       this_html += text_input[0].outerHTML;
     }
-  } else if (type === "date") {
+  } else if (type == "date") {
     var input = $("<input>");
     input
       .addClass("response")
@@ -1215,7 +1154,7 @@ function write(type, row) {
       .addClass("row_" + row["row_no"])
       .attr("name", "survey_" + row["item_name"])
       .attr("type", "text");
-  } else if (type === "dropdown") {
+  } else if (type == "dropdown") {
     var options = row["answers"].split("|");
     var this_dropdown = $("<select>");
     this_dropdown
@@ -1242,7 +1181,7 @@ function write(type, row) {
       this_dropdown.append("<option>" + this_option + "</option>");
     });
     var this_html = this_dropdown[0].outerHTML;
-  } else if (type === "email") {
+  } else if (type == "email") {
     var this_input = $("<input>");
     this_input
       .addClass("form-control")
@@ -1250,9 +1189,9 @@ function write(type, row) {
       .addClass(row["item_name"] + "_item row_" + row["row_no"])
       .attr("type", "email")
       .attr("name", "survey_" + row["item_name"]);
-  } else if (type === "instruct") {
+  } else if (type == "instruct") {
     this_html += "<td colspan='2'>" + row["text"] + "</td>";
-  } else if (type === "jumbled") {
+  } else if (type == "jumbled") {
     var this_td = $("<td>");
     this_td.attr("colspan", 2);
 
@@ -1269,7 +1208,7 @@ function write(type, row) {
     var question = row["text"].split("|");
     questions_html = question
       .map(function (text, index) {
-        if (index === question.length - 1) {
+        if (index == question.length - 1) {
           return text;
         } else {
           var row_x = row;
@@ -1288,12 +1227,12 @@ function write(type, row) {
     this_div.append(questions_html);
 
     this_html = this_td[0].outerHTML;
-  } else if (type === "likert") {
+  } else if (type == "likert") {
     // set styles
-    if (typeof row["btn_width"] === "undefined") {
+    if (typeof row["btn_width"] == "undefined") {
       row["btn_width"] = "auto";
     }
-    if (typeof row["side_width"] === "undefined") {
+    if (typeof row["side_width"] == "undefined") {
       var side_width = "auto";
     }
 
@@ -1339,7 +1278,7 @@ function write(type, row) {
     }
     this_div.append(side_text[1]);
     this_html += this_div[0].outerHTML;
-  } else if (type === "number") {
+  } else if (type == "number") {
     var this_input = $("<input>");
     this_input[0].type = "number";
     this_input[0].name = "survey_" + row["item_name"];
@@ -1348,7 +1287,7 @@ function write(type, row) {
       .addClass("form-control")
       .addClass(row["item_name"] + "_item row_" + row["row_no"]);
     this_html += this_input[0].outerHTML;
-  } else if (type === "para") {
+  } else if (type == "para") {
     var this_textarea = $("<textarea>");
     this_textarea[0].name = "survey_" + row["item_name"];
     this_textarea
@@ -1356,7 +1295,7 @@ function write(type, row) {
       .addClass("response");
     this_textarea.css("width", "100%").css("height", "200px");
     this_html += this_textarea[0].outerHTML;
-  } else if (type === "radio_horizontal") {
+  } else if (type == "radio_horizontal") {
     var options = row["answers"].split("|");
     var this_table = $("<table>");
     this_row = this_table[0].insertRow();
@@ -1385,7 +1324,7 @@ function write(type, row) {
       this_cell.innerHTML = this_div[0].outerHTML;
     }
     this_html += this_table[0].outerHTML;
-  } else if (type === "radio_vertical") {
+  } else if (type == "radio_vertical") {
     var options = row["answers"].split("|");
     var values = row["values"].split("|");
     for (var i = 0; i < options.length; i++) {
@@ -1416,7 +1355,7 @@ function write(type, row) {
       this_div.append(this_input).append(this_label).append(feedback_string);
       this_html += this_div[0].outerHTML;
     }
-  } else if (type === "text") {
+  } else if (type == "text") {
     var this_input = $("<input>");
     this_input[0].type = "text";
     this_input[0].name = "survey_" + row["item_name"];
@@ -1465,7 +1404,7 @@ function write_survey(this_survey, this_id) {
   }
 
   unique_shuffles = this_survey_object.shuffle_question.filter(
-    (v, i, a) => a.indexOf(v) === i
+    (v, i, a) => a.indexOf(v) == i
   ); //by Camilo Martin on https://stackoverflow.com/questions/1960473/unique-values-in-an-array
 
   for (var i = 0; i < unique_shuffles.length; i++) {
@@ -1479,7 +1418,7 @@ function write_survey(this_survey, this_id) {
           if (
             typeof element !== "undefined" &&
             element.toLowerCase() !== "none" &&
-            element.toLowerCase() === unique_shuffles[i]
+            element.toLowerCase() == unique_shuffles[i]
           ) {
             return this_survey_object.content[index];
           }
@@ -1521,7 +1460,7 @@ function write_survey(this_survey, this_id) {
   $("#" + this_id).show(1000); //scroll to top
 
   $(".show_tab").on("click", function () {
-    if (this.className.indexOf("disabled") === -1) {
+    if (this.className.indexOf("disabled") == -1) {
       $(".show_tab").removeClass("active");
       $(".survey_page").hide();
       $("#" + this.id.replace("_button", "")).show();
@@ -1532,6 +1471,7 @@ function write_survey(this_survey, this_id) {
     }
   });
 }
+
 /*
  * exports for testing
  */

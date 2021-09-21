@@ -59,6 +59,8 @@
 
 
 <input type="hidden" id="image_response" name="image_response">
+<input type="hidden" id="img_accuracy" name="img_accuracy">
+
 
 <script>
 
@@ -178,12 +180,14 @@ Phase.set_timer(function(){
     )
   );
   
-  
+  var symbol_name = []
   $(".symbol_input").on("click", function(){
     $(this).prop("src", $(".selected").prop("src"));
     $(this).removeClass("blankie");
+    symbol_name.push($(this).prop("src").substr(-12));
     
     var all_responses = [];
+    var all_accuracies =[];
     $("#submit_btn").prop("disabled",true);
     
     
@@ -191,12 +195,12 @@ Phase.set_timer(function(){
       $("#submit_btn").prop("disabled",false);
     }
     
-    /*
+
     for(var i = 0; i < $(".symbol_input").length; i++){
       all_responses.push($(".symbol_input")[i].src);
+      
     }
-    
-    */
+
     
     
     $("#image_response").val(all_responses.join(","));
@@ -207,18 +211,6 @@ Phase.set_timer(function(){
     $(this).addClass("selected");
   });
   
-  $(".task_symbol").on("click", function(){
-  
-    $(".task_digit").hide();
-    $("task_table").hide();
-    
-    var response = $(this).attr("src");
-    $('#response').css({ 'display':'block' });
-    
-    setTimeout(function(){
-      Phase.submit();
-    },2000);
-  });
   /*
   
   */
@@ -227,17 +219,5 @@ Phase.set_timer(function(){
   
   
 }, 0);
-
-
-// no_symbols	legend_symbol_1	legend_symbol_2	legend_symbol_3	legend_symbol_4	legend_symbol_5	column_digit_1	column_digit_2	column_digit_3	column_digit_4	column_digit_5	legend_digit_1	legend_digit_2	legend_digit_3	legend_digit_4	legend_digit_5	
-
-
-/*
-var legend_symbols = "{{legend_symbols}}".split("|");
-var column_digits	 = "{{column_digits}}".split("|");
-var 	 = "{{legend_digits}}".split("|");
-*/
-
-
 
 </script>

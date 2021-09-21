@@ -105,6 +105,7 @@ Phase.set_timer(function(){
         $("<img>")
           .addClass("legend_symbol")
           .addClass("symbol_select")
+          .prop("legend_key", legend_digits[symbol_index])
           .prop("id", "symbol_image_" + symbol_index)
           .attr("src",symbol_item)
       )
@@ -157,6 +158,8 @@ Phase.set_timer(function(){
           $("<img>")
             .addClass("legend_symbol")
             .addClass("symbol_input")
+            .prop("correct", 0)
+            .prop("correct_digit", column_digits[legend_index])
             .addClass("blankie")
             .prop("id", "legend_symbol_" + legend_index)
             .attr("src","../User/Stimuli/blank.png")
@@ -182,6 +185,19 @@ Phase.set_timer(function(){
   
   var symbol_name = []
   $(".symbol_input").on("click", function(){
+    //alert($(this).prop("correct_digit"));
+    
+    var this_correct = $(this).prop("correct_digit");
+    var this_response = $(".selected").prop("legend_key");
+  
+
+    if(this_correct == this_response){
+      $(this).prop("correct", 1);
+    } else {
+      $(this).prop("correct", 0);
+    }
+    
+    
     $(this).prop("src", $(".selected").prop("src"));
     $(this).removeClass("blankie");
     symbol_name.push($(this).prop("src").substr(-12));
@@ -198,12 +214,13 @@ Phase.set_timer(function(){
 
     for(var i = 0; i < $(".symbol_input").length; i++){
       all_responses.push($(".symbol_input")[i].src);
-      
+      all_accuracies.push($(".symbol_input")[i].correct);
     }
+    
 
     
-    
     $("#image_response").val(all_responses.join(","));
+    $("#img_accuracy").val(all_accuracies.join(","));
   });
   
   $(".symbol_select").on("click", function(){

@@ -1,8 +1,8 @@
 {
   "all_procs": {
-    "procedure_1.csv": "item,phasetype,max time,text,shuffle 1,no_symbols,legend_symbol_1,legend_symbol_2,legend_symbol_3,legend_symbol_4,legend_symbol_5,column_digit_1,column_digit_2,column_digit_3,column_digit_4,column_digit_5,legend_digit_1,legend_digit_2,legend_digit_3,legend_digit_4,legend_digit_5,\r\n0,digit-symbol,user,,off,5,User/Stimuli/symbol_1.png,User/Stimuli/symbol_2.png,User/Stimuli/symbol_3.png,User/Stimuli/symbol_4.png,User/Stimuli/symbol_5.png,5,3,2,1,4,1,2,3,4,5,\r\n0,instruct,user,This is the start of a new experiment.,off,,,,,,,,,,,,,,,,,"
+    "procedure_1.csv": "item,phasetype,max_time,text,shuffle_1,no_symbols,legend_symbol_1,legend_symbol_2,legend_symbol_3,legend_symbol_4,legend_symbol_5,column_digit_1,column_digit_2,column_digit_3,column_digit_4,column_digit_5,legend_digit_1,legend_digit_2,legend_digit_3,legend_digit_4,legend_digit_5,\r\n0,digit-symbol,user,,off,5,User/Stimuli/symbol_1.png,User/Stimuli/symbol_2.png,User/Stimuli/symbol_3.png,User/Stimuli/symbol_4.png,User/Stimuli/symbol_5.png,5,3,2,1,4,1,2,3,4,5,\r\n0,instruct,user,This is the start of a new experiment.,off,,,,,,,,,,,,,,,,,"
   },
-  "conditions": "name,notes,stimuli,procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,scripts,\r\ncondition_1,You can put more detailed notes in this field,stimuli_1.csv,procedure_1.csv,off,,on,,,5,,",
+  "conditions": "name,notes,stimuli,procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,scripts,redcap_url,\r\ncondition_1,You can put more detailed notes in this field,stimuli_1.csv,procedure_1.csv,off,,on,,,5,,https://nt906822.webs.act.reading.ac.uk/redcap/redcapImport.php,",
   "all_stims": {
     "stimuli_1.csv": "cue,answer,\r\n,,"
   },

@@ -144,6 +144,7 @@ Project = {
 
     var post_string = "post_" + project_json.post_no;
 
+    response_data["location"] = Project.get_vars.location;
     /*
      * detect if the user is in fullscreen or not
      */
@@ -222,6 +223,97 @@ Project = {
         .find("iframe")
         .hide();
       Project.start_post(go_to_info);
+    }
+
+    /*
+    * save to redcap (if appropriate)
+    */
+    console.log("project_json.this_condition.redcap_url");
+    console.log(project_json.this_condition.redcap_url);
+    if(typeof(project_json.this_condition.redcap_url) !== "undefined"){
+      console.log("hi, we;re here");
+
+      var phase_responses = project_json.responses[project_json.responses.length-1];
+
+      console.log("phase_responses");
+      console.log(phase_responses);
+
+      var this_location = phase_responses.location;
+      /*
+      * update all the keys to have the "location_" before them
+      */
+
+      var clean_phase_responses = {};
+
+      Object.keys(phase_responses).forEach(function(old_key){
+
+        //if(phase_responses[old_key].toLowerCase() !== "condition_redcap_url" & phase_responses[old_key] !== ""){
+
+
+          clean_phase_responses[this_location + "_" + old_key] =
+          phase_responses[old_key]
+        //}
+      });
+      delete(clean_phase_responses[
+        this_location + "_condition_redcap_url"
+      ]);
+      delete(clean_phase_responses[
+        this_location + "_"
+      ]);
+
+      console.log("clean_phase_responses");
+      console.log(clean_phase_responses);
+      clean_phase_responses.record_id = phase_responses.username;
+
+
+      clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
+      clean_phase_responses['redcap_repeat_instrument'] = phase_responses['location'];
+
+
+      /*
+      Object.keys(phase_responses).forEach(function(old_key){
+
+        Object.defineProperty(
+          phase_responses,
+          this_location + "_" + old_key,
+          Object.getOwnPropertyDescriptor(
+            phase_responses,
+            old_key
+          )
+        );
+        delete phase_responses[old_key];
+      });
+      */
+
+
+      console.log("just before the ajax");
+      $.ajax({
+        type: "POST",
+        url: project_json.this_condition.redcap_url,
+        crossDomain: true,
+        data: clean_phase_responses
+
+        /*
+        {
+          "record_id": parent.parent.$("#prehashed_code").val(),
+          "participant_code": $("#participant_code").val(),
+          "trial_no" : parent.parent.project_json.trial_no,
+          //"participant_confirm": parent.parent.$("#prehashed_code").val(),
+          "shape_response_time": this_rt,
+          "color_response": $("#color_response").val(),
+          "shape_response_complete": 2
+        }
+        */,
+        success: function(result){
+          console.log("result");
+          console.log(result);
+          //Phase.submit();
+        }
+      });
+
+
+
+
     }
 
     switch (Project.get_vars.platform) {
@@ -465,7 +557,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         .find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
         .focus(); //or anything that no-one would accidentally create.
 
-      //detect if max time exists and start timer
+      //detect if max_time exists and start timer
       var post_val;
       if (project_json.post_no === 0) {
         post_val = "";
@@ -475,14 +567,14 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
       var max_time;
       if (
         typeof project_json.parsed_proc[project_json.phase_no][
-          post_val + "max time"
+          post_val + "max_time"
         ] === "undefined"
       ) {
         max_time = "user";
       } else {
         max_time =
           project_json.parsed_proc[project_json.phase_no][
-            post_val + "max time"
+            post_val + "max_time"
           ];
       }
       if ((max_time !== "") & (max_time.toLowerCase() !== "user")) {
@@ -1448,8 +1540,8 @@ function removeItemAll(arr, value) {
 }
 
 function shuffle_start_exp() {
-  //perhaps also have "shuffle" works as shuffle 1
-  //perhaps also have "block shuffle 1" as shuffle 2, etc.
+  //perhaps also have "shuffle" works as shuffle_1
+  //perhaps also have "block shuffle_1" as shuffle_2, etc.
 
   var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
     (item) => item.indexOf("shuffle") !== -1
@@ -1463,7 +1555,7 @@ function shuffle_start_exp() {
       }
     }
 
-    if (shuffle_level !== "shuffle 1") {
+    if (shuffle_level !== "shuffle_1") {
       //split project_json.parsed_proc into chunks based on this_level
       //off rows don't change their order
       var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
@@ -1543,7 +1635,7 @@ function shuffle_start_exp() {
 
   shuffle_array = {};
   project_json.parsed_proc.forEach(function (row, index) {
-    var this_shuffle = row["shuffle 1"];
+    var this_shuffle = row["shuffle_1"];
     if (typeof shuffle_array[this_shuffle] === "undefined") {
       shuffle_array[this_shuffle] = [index];
     } else {
@@ -1556,12 +1648,12 @@ function shuffle_start_exp() {
   });
   //apply shuffle to project_json.parsed_proc
   new_proc = project_json.parsed_proc.map(function (row, original_index) {
-    if ((row["shuffle 1"] !== "off") & (row["shuffle 1"] !== "")) {
-      this_shuffle = row["shuffle 1"];
+    if ((row["shuffle_1"] !== "off") & (row["shuffle_1"] !== "")) {
+      this_shuffle = row["shuffle_1"];
       var this_pos = shuffle_array[this_shuffle].pop();
       return project_json.parsed_proc[this_pos];
     }
-    if (row["shuffle 1"] === "off") {
+    if (row["shuffle_1"] === "off") {
       return project_json.parsed_proc[original_index];
     }
   });
@@ -1805,9 +1897,9 @@ function write_phase_iframe(index) {
       "<scr" + 'ipt src="libraries/collector/StimuliChecks.js"></scr' + "ipt>";
     var timer_code;
     if (
-      typeof this_proc["max time"] !== "undefined" &&
-      this_proc["max time"] !== "user" &&
-      this_proc["max time"] !== ""
+      typeof this_proc["max_time"] !== "undefined" &&
+      this_proc["max_time"] !== "user" &&
+      this_proc["max_time"] !== ""
     ) {
       timer_code = Project.html_code.Timer;
       if (
